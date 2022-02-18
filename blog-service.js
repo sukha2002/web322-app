@@ -52,4 +52,63 @@ const getCategories = () => {
     });   
 }
 
-module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories};
+const addPost = (postData) => {
+    return new Promise(function(resolve, reject){
+        if(postData.published == undefined) {
+            postData.published = false;
+        }
+        else {
+            postData.published = true;
+        }
+        postData.id = postsArray.length + 1;
+        postsArray.push(postData);
+        resolve(postData);
+    });  
+}
+
+const getPostsByCategory = (category) => {
+    return new Promise(function(resolve, reject){
+        let postCategoryArray = [];
+        for(let i = 0; i < postsArray.length; i++) {
+            if(postsArray[i].category == category) {
+                postCategoryArray.push(postsArray[i]);
+            }
+        }
+        if(postCategoryArray.length == 0) {
+            reject("no results returned");
+        }
+        resolve(postCategoryArray);
+    });   
+}
+
+const getPostsByMinDate = (minDateStr) => {
+    return new Promise(function(resolve, reject){
+        let postMinDateArray = [];
+        for(let i = 0; i < postsArray.length; i++) {
+            if(new Date(postsArray[i].postDate) >= new Date(minDateStr)) {
+                postMinDateArray.push(postsArray[i]);
+            }
+        }
+        if(postMinDateArray.length == 0) {
+            reject("no results returned");
+        }
+        resolve(postMinDateArray);
+    });   
+}
+
+const getPostById = (id) => {
+    return new Promise(function(resolve, reject){
+        let postById;
+        for(let i = 0; i < postsArray.length; i++) {
+            if(postsArray[i].id == id) {
+                postById = postsArray[i];
+            }
+        }
+        if(postById == undefined) {
+            reject("no result returned");
+        }
+        resolve(postById);
+    });   
+}
+
+module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories, addPost, getPostsByCategory, getPostsByMinDate, getPostById};
